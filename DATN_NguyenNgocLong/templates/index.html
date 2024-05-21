@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Recommendations</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="mt-5">Movie Recommendations</h1>
+        Bộ dữ liệu được sử dụng trong bài báo cáo là bộ dữ liệu movie-lens 1M DataSet được tạo ra bởi GroupLens Research là một nhóm nghiên cứu thuộc Đại học Minnesota và được phát hành vào tháng 2 năm 2003.<br>
+        Bộ dữ liệu này chứa thông tin của 1.000.209 đánh giá ẩn danh của khoảng 3.900 phim được tạo bởi 6.040 người dùng MovieLens vào năm 2000. Bao gồm 3 tệp dữ liệu: movies.dat chứa thông tin của các bộ phim bao gồm: MoviesId, Title(tên phim) và Genres(thể loại phim), users.dat chứa thông tin của UserId, Giới tính, Tuổi, Nghề nghiệp, mã zip, Ratings.dat chứa thông tin của UserId, MovieId, Rating(số điểm đánh giá) và Timestamp(Thời gian đánh giá).
+
+    </div>
+    <div class="container mt-3">
+        <!-- Collaborative Filtering Form -->
+        <form method="post" action="/recommend/collaborative">
+            <div class="form-group">
+                <label for="user_id">Select User ID for Collaborative Filtering</label>
+                <select class="form-control" id="user_id" name="user_id" required>
+                    {% for user in users %}
+                    <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Gợi ý Collaborative</button>
+        </form>
+
+        <!-- Content-Based Filtering Form -->
+        <form method="post" action="/recommend/content" class="mt-4">
+            <div class="form-group">
+                <label for="movie_id">Select Movie for Content-Based Filtering</label>
+                <select class="form-control" id="movie_id" name="movie_id" required>
+                    {% for movie in movies %}
+                    <option value="{{ movie.MovieID }}">{{ movie.Title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Gợi ý Content-Based</button>
+        </form>
+
+        <!-- Hybrid Filtering Form -->
+        <form method="post" action="/recommend/hybrid" class="mt-4">
+            <div class="form-group">
+                <label for="hybrid_user_id">Select User ID for Hybrid Filtering</label>
+                <select class="form-control" id="hybrid_user_id" name="hybrid_user_id" required>
+                    {% for user in users %}
+                    <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="hybrid_movie_id">Select Movie for Hybrid Filtering</label>
+                <select class="form-control" id="hybrid_movie_id" name="hybrid_movie_id" required>
+                    {% for movie in movies %}
+                    <option value="{{ movie.MovieID }}">{{ movie.Title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Gợi ý Hybrid</button>
+        </form>
+
+        <!-- Collaborative Filtering Results -->
+        {% if collab_movies %}
+        <h2 class="mt-5">Collaborative Filtering Recommendations</h2>
+        <ul class="list-group">
+            {% for movie in collab_movies %}
+            <li class="list-group-item">{{ movie.Title }} - Genres: {{ movie.Genres }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Content-Based Filtering Results -->
+        {% if content_movies %}
+        <h2 class="mt-5">Content-Based Recommendations</h2>
+        <ul class="list-group">
+            {% for movie in content_movies %}
+            <li class="list-group-item">{{ movie.Title }} - Genres: {{ movie.Genres }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Hybrid Filtering Results -->
+        {% if hybrid_movies %}
+        <h2 class="mt-5">Hybrid Recommendations</h2>
+        <ul class="list-group">
+            {% for movie in hybrid_movies %}
+            <li class="list-group-item">{{ movie.Title }} - Genres: {{ movie.Genres }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
